@@ -41,16 +41,19 @@ cacheSolve <- function(x, ...) {
   inv <- x$getinv()
   if(!is.null(inv)) {
     ## return the already calculated inverse
+    print("getting cached data")
     return(inv)
   }
   ## otherwise calcualte the inverse, store it and return it
   data <- x$get()
-  if( class(try(solve(data),silent=T))=="matrix") {
-    inv <- solve(data, ...)    
+  ## test if matrix is singular by trying to solve for the inverse and catch any errors: 
+  ## (from http://stackoverflow.com/questions/24961983/how-to-check-if-a-matrix-has-an-inverse-in-the-r-language)
+  ## could also consider the matrixcalc package is.singular.matrix(x) fn.
+  if( class(try(inv <- solve(data),silent=T))=="matrix") {
     x$setinv(inv)
     return(inv)
   } else {
-    print("Matrix is singular : inverse is NA")
+    warning("Matrix is singular : inverse is NA")
     return(NA)
   }
 }
