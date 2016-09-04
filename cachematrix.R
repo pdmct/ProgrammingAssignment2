@@ -41,7 +41,6 @@ cacheSolve <- function(x, ...) {
   inv <- x$getinv()
   if(!is.null(inv)) {
     ## return the already calculated inverse
-    print("getting cached data")
     return(inv)
   }
   ## otherwise calcualte the inverse, store it and return it
