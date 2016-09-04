@@ -33,7 +33,8 @@ makeCacheMatrix <- function(x = matrix()) {
 ## if this inverse has already been cached and the data hasn't changed it will
 ## return the cached value, otherwise it will calculate the inverse and return it
 ## ARGS:  x : a cacheMatrix
-## RETURNS: inverse of X (using solve)
+## RETURNS: inverse of X (using solve) or NA
+## ASSUMPTIONS: matrix is invertible, with return NA if matrix is singular
 
 cacheSolve <- function(x, ...) {
   ## Return a matrix that is the inverse of 'x'
@@ -44,9 +45,13 @@ cacheSolve <- function(x, ...) {
   }
   ## otherwise calcualte the inverse, store it and return it
   data <- x$get()
-  inv <- solve(data, ...)
-  x$setinv(inv)
-  inv
+  if( class(try(solve(data),silent=T))=="matrix") {
+    inv <- solve(data, ...)    
+    x$setinv(inv)
+    return(inv)
+  } else {
+    print("Matrix is singular : inverse is NA")
+    return(NA)
+  }
 }
-
 
